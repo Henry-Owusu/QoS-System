@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts and Logs</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <!--JQuery Library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .log-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .log-item.security { background-color: #ffdddd; }
+        .log-item.system { background-color: #ddffdd; }
+        .log-item.error { background-color: #ddddff; }
+        .log-item.update { background-color: #fff0da; }
+        .log-item.user { background-color: #dafaff; }
+        .log-item.warning { background-color: #fffacd; }
+        .log-item.network { background-color: #e0e0e0; }
+        .log-item.performance { background-color: #f0e5ff; }
+        .log-item.backup { background-color: #d0f0c0; }
+        .log-item.maintenance { background-color: #f0e0d6; }
+
+    
+    </style>
+
+
+    <style>
+        body { padding-top: 10%; background-color: white; }
+        .navbar { background-color: maroon; position: fixed; top: 0; width: 100%; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .navbar-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .navbar-collapse { 
+            justify-content: flex-end; /* Align items to the right in the collapsible navbar */
+        }
+        .navbar-nav .nav-item { padding: 10px 30px; border-radius: 20px 20px 0 0; position: relative; }
+        .navbar-nav .nav-item.active { background-color: white; }
+        .navbar-nav .nav-item.active .nav-link { color: maroon; }
+        .nav-item.active a::before { left: -30px; }
+        .nav-item.active a::after { right: -30px; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="policy">Qos Policies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard">Performance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="monitor_status">Network Status</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>System Alerts and Logs</h1>
+        <input type="text" id="searchInput" onkeyup="searchLogs()" placeholder="Search for logs..">
+        <ul id="logList">
+            {% for log in logs %}
+            <li class="log-item {{ log.type|lower }}">{{ log.type }}: {{ log.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <a href="{{ url_for('export_logs') }}" class="export-button">Export Logs</a>
+
+
+
+    <script>
+        function searchLogs() {
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toUpperCase();
+            let ul = document.getElementById("logList");
+            let li = ul.getElementsByTagName("li");
+
+            for (let i = 0; i < li.length; i++) {
+                let item = li[i];
+                if (item.textContent.toUpperCase().indexOf(filter) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

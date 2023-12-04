@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <!--JQuery Library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { padding-top: 65px; background-color: white; }
+        .navbar { background-color: maroon; position: fixed; top: 0; width: 100%; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .navbar-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .navbar-collapse { 
+            justify-content: flex-end; /* Align items to the right in the collapsible navbar */
+        }
+        .navbar-nav .nav-item { padding: 10px 30px; border-radius: 20px 20px 0 0; position: relative; }
+        .navbar-nav .nav-item.active { background-color: white; }
+        .navbar-nav .nav-item.active .nav-link { color: maroon; }
+        .nav-item.active a::before { left: -30px; }
+        .nav-item.active a::after { right: -30px; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+
+    <style>
+      .chart-container {
+          width: 75%;
+          margin: 20px auto;
+      }
+
+   
+
+        #utilizationAlert {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        @keyframes blinking {
+            0% { opacity: 1.0; }
+            50% { opacity: 0.0; }
+            100% { opacity: 1.0; }
+        }
+
+        .blinking {
+            animation: blinking 1s linear infinite;
+        }
+
+      
+      
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="config">QoS Configuration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="policy">QoS Policies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="monitor_status">Network Status</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="dashboard-container">
+        <h1>Network Dashboard</h1>
+
+        <div id="utilizationAlert" style="display: none; padding: 10px; margin-bottom: 20px; border-radius: 5px;"></div>
+        <div class="chart-container">
+            <canvas id="networkChart"></canvas>
+        </div>
+        <div class="alerts">
+            <h2>Real-Time Alerts</h2>
+            <div id="alerts"></div>
+        </div>
+ 
+    </div>
+
+    <a href="{{ url_for('alerts') }}">View Alerts and Logs</a>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Chart.js
+        const ctx = document.getElementById('networkChart').getContext('2d');
+        const networkChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Voice Bandwidth Utilization',
+                    data: [],
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100 // Assuming the utilization is in percentage
+                    }
+                }
+            }
+        });
+
+        // Function to check and update alert status
+        function updateAlertStatus(utilization) {
+            const alertElement = document.getElementById('utilizationAlert');
+            alertElement.style.display = 'block';
+            if (utilization >= 50 && utilization <= 70) {
+                alertElement.textContent = 'Moderate Utilization';
+                alertElement.style.backgroundColor = 'yellow';
+                alertElement.style.color = 'black';
+            } else if (utilization >= 71 && utilization <= 90) {
+                alertElement.textContent = 'High Utilization';
+                alertElement.style.backgroundColor = 'red';
+                alertElement.style.color = 'white';
+            } else if (utilization > 90) {
+                alertElement.textContent = 'Very High Utilization';
+                alertElement.style.backgroundColor = 'darkred';
+                alertElement.style.color = 'white';
+                alertElement.classList.add('blinking');
+            } else {
+                alertElement.style.display = 'none';
+            }
+        }
+
+        // Fetch network stats from Flask API and update the chart
+        function updateNetworkStats() {
+            fetch('/api/network-stats')
+                .then(response => response.json())
+                .then(data => {
+                    const voiceUtilization = parseFloat(data.voice.bandwidth.replace(' Mbps', ''));
+                    networkChart.data.labels.push(new Date().toLocaleTimeString());
+                    networkChart.data.datasets[0].data.push(voiceUtilization);
+                    networkChart.update();
+
+                    // Update alert status based on voice utilization
+                    updateAlertStatus(voiceUtilization);
+                })
+                .catch(error => console.error('Error fetching network stats:', error));
+        }
+
+        // Update the network stats every 5 seconds
+        setInterval(updateNetworkStats, 5000);
+    });
+
+
+        // Example of Real-Time Alerts (Mockup)
+        const alertsContainer = document.getElementById('alerts');
+        setInterval(() => {
+            // This is a mockup. Here you would fetch and display real-time alerts.
+            const alertMessage = `Alert at ${new Date().toLocaleTimeString()}`;
+            const alertElement = document.createElement('div');
+            alertElement.textContent = alertMessage;
+            alertsContainer.prepend(alertElement);
+        }, 5000); // Example: new alert every 5 seconds
+    
+
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Policy</title>
+    <!-- Bootstrap for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 65px; background-color: white; }
+        .navbar { background-color: maroon; position: fixed; top: 0; width: 100%; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .navbar-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .navbar-collapse { 
+            justify-content: flex-end; /* Align items to the right in the collapsible navbar */
+        }
+        .navbar-nav .nav-item { padding: 10px 30px; border-radius: 20px 20px 0 0; position: relative; }
+        .navbar-nav .nav-item.active { background-color: white; }
+        .navbar-nav .nav-item.active .nav-link { color: maroon; }
+        .nav-item.active a::before { left: -30px; }
+        .nav-item.active a::after { right: -30px; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+
+
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        } */
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table thead th {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="config">QoS Configuration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard">Performance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="monitor_status">Network Status</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container mt-5">
+        <h1>QoS Policies</h1>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Traffic Type</th>
+                    <th>Minimum Bandwidth (%)</th>
+                    <th>Maximum Bandwidth (%)</th>
+                    <th>Latency Targets</th>
+                    <th>Jitter Requirements</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>VoIP</td>
+                    <td>25% of available bandwidth</td>
+                    <td>30% of available bandwidth</td>
+                    <td>150 ms round-trip</td>
+                    <td>&lt; 20 ms</td>
+                </tr>
+                <tr>
+                    <td>Video</td>
+                    <td>35% of available bandwidth</td>
+                    <td>40% of available bandwidth</td>
+                    <td>200 ms round-trip</td>
+                    <td>&lt; 30 ms</td>
+                </tr>
+                <tr>
+                    <td>Data</td>
+                    <td>25% of available bandwidth</td>
+                    <td>30% of available bandwidth</td>
+                    <td>250 ms round-trip</td>
+                    <td>&lt; 40 ms</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

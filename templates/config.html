@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <!--JQuery Library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+
+    <style>
+        body { padding-top: 65px; background-color: white; }
+        .navbar { background-color: maroon; position: fixed; top: 0; width: 100%; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .navbar-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .navbar-collapse { 
+            justify-content: flex-end; /* Align items to the right in the collapsible navbar */
+        }
+        .navbar-nav .nav-item { padding: 10px 30px; border-radius: 20px 20px 0 0; position: relative; }
+        .navbar-nav .nav-item.active { background-color: white; }
+        .navbar-nav .nav-item.active .nav-link { color: maroon; }
+        .nav-item.active a::before { left: -30px; }
+        .nav-item.active a::after { right: -30px; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+
+    <style>
+        /* body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        } */
+
+        .container {
+          width: 80%;
+          margin: auto;
+          padding: 20px;
+          padding-top: 3%;
+          background-color: white;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          text-align: center;
+        }
+
+        
+        .containercore {
+            padding-top: 10%;
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .form-container {
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .percentage-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .percentage-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .percentage-sign {
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .popup-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      
+      .popup-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      }
+    
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 25px;
+        cursor: pointer;
+    }
+
+    </style>
+
+</head>
+
+
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="policy">Qos Policies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard">Performance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="monitor_status">Network Status</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+
+   
+    <div class="container">
+        <h1>QoS Configuration</h1>
+        <form id="qosForm">
+            <div class="form-section">
+                <label for="appType">Application Type:</label>
+                <select id="appType" name="appType">
+                    <option value="streaming">Streaming</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="browsing">Browsing</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="serviceClass">Service Class:</label>
+                <select id="serviceClass" name="serviceClass">
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="minBandwidth">Data Source:</label>
+                <input type="number" class="form-control" placeholder="IP Address source">
+            </div>
+
+
+            <div class="form-group">
+                <label for="minBandwidth">Min Bandwidth (%):</label>
+                <input type="number" class="form-control" id="minBandwidth" name="minBandwidth" min="0" max="100" placeholder="Minimum Bandwidth">
+            </div>
+
+            <div class="form-group">
+                <label for="maxBandwidth">Max Bandwidth (%):</label>
+                <input type="number" class="form-control" id="maxBandwidth" name="maxBandwidth" min="0" max="100" placeholder="Maximum Bandwidth">
+            </div>
+
+            <!-- Latency Targets -->
+            <div class="form-group">
+                <label for="latencyTarget">Latency Target (ms):</label>
+                <input type="number" class="form-control" id="latencyTarget" name="latencyTarget" placeholder="Latency Target">
+            </div>
+
+            <!-- Jitter Requirement -->
+            <div class="form-group">
+                <label for="jitterRequirement">Jitter Requirement (ms):</label>
+                <input type="number" class="form-control" id="jitterRequirement" name="jitterRequirement" placeholder="Jitter Requirement">
+            </div>
+
+            <div class="form-section">
+                <input type="checkbox" id="enableRule" name="enableRule">
+                <label for="enableRule">Enable Rule</label>
+            </div>
+
+            <button type="submit">Save Configuration</button>
+        </form>
+    </div>
+
+
+    <button id="updateCoreBtn" class="btn">Update Core Configurations</button>
+
+    
+    <!-- Pop-up Form (initially hidden) -->
+    <div id="coreConfigPopup" class="popup-container" style="display: none;">
+        <div class="containercore">
+            <div class="popup-content">
+                <h2 class="mt-3">QoS Settings <span id="closePopup" class="close-btn">&times;</span></h2>
+                    <form id="qosForm">
+                        <div class="form-group">
+                            <label for="category">Category:</label>
+                            <select class="form-control" name="category" id="category">
+                                <option value="voice">Voice</option>
+                                <option value="video">Video</option>
+                                <option value="data">Data</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">Priority:</label>
+                            <select class="form-control" name="priority" id="priority">
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bandwidth">Bandwidth:</label>
+                            <input type="number" class="form-control" name="bandwidth" id="percentage" placeholder="Enter percentage" min="0" max="100"><span class="percentage-sign">%</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update QoS</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('qosForm');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+            
+                    // Basic Validation Example
+                    const bandwidthLimit = document.getElementById('bandwidthLimit').value;
+                    if (bandwidthLimit < 1 || bandwidthLimit > 1000) {
+                        alert('Please enter a valid bandwidth limit.');
+                        return;
+                    }
+            
+                    // Construct form data
+                    const formData = new FormData(form);
+            
+                    // AJAX Request to server
+                    fetch('/save-qos-configuration', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        alert('Configuration Saved Successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while saving the configuration');
+                    });
+                });
+            });
+            
+
+
+        document.getElementById('updateCoreBtn').addEventListener('click', function() {
+            document.getElementById('coreConfigPopup').style.display = 'flex';
+        });
+            
+
+
+        $(document).ready(function() {
+            $('#updateCoreBtn').click(function() {
+                $('#coreConfigPopup').show();
+            });
+
+            $('#closePopup').click(function() {
+                $('#coreConfigPopup').hide();
+            });    
+        });
+            
+        document.getElementById('qosForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = document.getElementById('category').value;
+            const priority = document.getElementById('priority').value;
+            const bandwidth = document.getElementById('bandwidth').value;
+
+            fetch('/update_qos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'  // Set the content type header
+                },
+                body: new URLSearchParams({
+                    'category': category,
+                    'priority': priority,
+                    'bandwidth': bandwidth
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => alert(data.message))
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+                alert('Error: ' + error.message);
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('percentage').addEventListener('input', function () {
+            var value = this.value;
+            if (value < 0 || value > 100) {
+                alert('Please enter a valid percentage (0-100)');
+                this.value = '';
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>
+
+

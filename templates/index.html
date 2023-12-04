@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom CSS for Homepage */
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        
+        .jumbotron {
+            background-color: maroon;
+            color: white;
+            padding: 100px 0;
+        }
+        .jumbotron h1 {
+            font-size: 3.5rem;
+        }
+        .jumbotron p {
+            font-size: 1.25rem;
+        }
+
+        
+        .feature-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .feature-box h2 {
+            font-size: 2rem;
+            color: #007BFF;
+        }
+        .feature-box p {
+            font-size: 1.1rem;
+        }
+        .btn-primary {
+            background-color: #007BFF;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        /* Custom CSS for Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar { background-color: maroon; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <!-- navigation bar Section -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="dashboard">Services <span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="contact_us">Contact Us <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="jumbotron text-center">
+        <h1>Welcome to Our QoS Management System</h1>
+        <p>Your Solution for Network Performance Optimization</p>
+        <a href="#features" class="btn btn-primary btn-lg">Explore Features</a>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container" id="features">
+        <div class="row">
+            <!-- Feature 1: Easy Configuration -->
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <h2>Easy Configuration</h2>
+                    <p>Simplify QoS setup with our user-friendly interface. Configure policies effortlessly.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2: Real-time Monitoring -->
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <h2>Real-time Monitoring</h2>
+                    <p>Monitor network performance in real-time. Stay informed and make data-driven decisions.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Customized Policies -->
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <h2>Customized Policies</h2>
+                    <p>Create and tailor QoS policies to meet the unique needs of your organization.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer text-center">
+        <div class="container">
+            <p>&copy; 2023 QoS Management System. All Rights Reserved.</p>
+            <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

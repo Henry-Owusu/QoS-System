@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QoS Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('../static/assets/ashesi.jpeg');
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 50;
+            padding-top: 7%;
+        }
+
+        
+
+        .contact-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 0;
+        }
+
+        .contact-info, .contact-form {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+        }
+
+        .contact-info {
+            color: #333;
+            background: white;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .contact-info h1 {
+            margin-bottom: 20px;
+            color: maroon;
+        }
+
+        .contact-info .info {
+            margin-top: 20px;
+        }
+
+        .contact-info .info div {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-info .info i {
+            font-size: 20px;
+            color: maroon;
+            margin-right: 10px;
+        }
+
+        .contact-form form {
+            background: white;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .contact-form form input, .contact-form form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .contact-form form button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: maroon;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .contact-form form button:hover {
+            background-color: darkred;
+        }
+
+        .navbar { background-color: maroon; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .form-group { margin-bottom: 10px; }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .contact-container {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Services <span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contact Us <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    </div>
+
+    <div class="contact-container">
+        <div class="contact-info">
+            <h1>Get in Touch with Us</h1>
+            <p>We are here to answer any questions you may have.</p>
+            <div class="info">
+                <div class="email">
+                    <i class="fa fa-envelope"></i>
+                    <p>henry@gmail.com</p>
+                </div>
+                <div class="phone">
+                    <i class="fa fa-phone"></i>
+                    <p>+233 2400007890</p>
+                </div>
+                <div class="address">
+                    <i class="fa fa-map-marker"></i>
+                    <p>1 University Avenue, Berekuso, Accra, Ghana</p>
+                </div>
+            </div>
+        </div>
+        <div class="contact-form">
+            <form action="/submit-contact-info" method="post">
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

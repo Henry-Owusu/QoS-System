@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Status</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 800px;
+            height: 100%;
+        }
+        
+        body { padding-top: 65px; background-color: white; }
+        .navbar { background-color: maroon; position: fixed; top: 0; width: 100%; }
+        .navbar-dark .navbar-nav .nav-link { color: white; }
+        .navbar-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .navbar-collapse { 
+            justify-content: flex-end; /* Align items to the right in the collapsible navbar */
+        }
+        .navbar-nav .nav-item { padding: 10px 30px; border-radius: 20px 20px 0 0; position: relative; }
+        .navbar-nav .nav-item.active { background-color: white; }
+        .navbar-nav .nav-item.active .nav-link { color: maroon; }
+        .nav-item.active a::before { left: -30px; }
+        .nav-item.active a::after { right: -30px; }
+        .form-group { margin-bottom: 10px; }
+    </style>
+
+    <style>
+        .stats-card h3 {
+            font-size: 1.2em;
+            color: maroon;
+        }
+        .stats-card p {
+            font-size: 1em;
+            color: #555;
+        }
+        .traffic-graph-title {
+            color: maroon;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(200px, 1fr)); /* Adjust the minmax values as needed */
+            gap: 20px;
+            padding: 20px;
+            /* direction: ltr; */
+        }
+
+        .stats-column {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,.1);
+            text-align: center;
+        }
+
+        .stats-column h3 {
+            font-size: 1.2em;
+            color: maroon;
+        }
+
+        .stats-column p {
+            font-size: 1em;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+        <a class="navbar-brand" href="/">HEF's Qos Management System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="config">Qos Configuration</a>~~
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="policy">QoS Policies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard">Performance</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Network Status Content -->
+    <div class="container mt-4">
+        <h3 class="traffic-graph-title text-center">Network Traffic Graph</h3>
+        <div class="chart-container">
+            <canvas id="trafficGraph"></canvas>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Traffic Details -->
+            <div id="liveStats" class="col-md-4">
+                <!-- Dynamic content will be loaded here -->
+    </div>
+
+    <!-- JavaScript for Dynamic Content -->
+    <script>
+        let trafficGraph; // Global reference to the graph
+    
+        // Function to fetch and display live network statistics
+        function fetchNetworkStats() {
+            fetch('/api/network-stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the stats display and graph
+                    updateStatsDisplay(data);
+                    updateTrafficGraph(data);
+                })
+                .catch(error => console.error('Error fetching network stats:', error));
+        }
+    
+        // Function to update the stats display
+        function updateStatsDisplay(data) {
+            const statsDiv = document.getElementById('liveStats');
+            let statsHtml = '<div class="stats-grid">'; // Start of grid container
+            for (const [trafficType, stats] of Object.entries(data)) {
+                statsHtml += `<div class="stats-column">
+                                <h3>${trafficType.toUpperCase()} Traffic</h3>
+                                <p>Bandwidth: ${stats.bandwidth}</p>
+                                <p>Latency: ${stats.latency}</p>
+                                <p>Packet Loss: ${stats.packet_loss}</p>
+                                <p>Throughput: ${stats.throughput}</p>
+                            </div>`;
+            }
+            statsHtml += '</div>'; // End of grid container
+            statsDiv.innerHTML = statsHtml;
+        }
+
+    
+        // Function to initialize the network traffic graph
+        function initTrafficGraph() {
+            const ctx = document.getElementById('trafficGraph').getContext('2d');
+            trafficGraph = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Initially empty, will be populated dynamically
+                    datasets: [] // Initially empty, will be populated dynamically
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    
+        // Function to update the network traffic graph
+        function updateTrafficGraph(data) {
+            const labels = Object.keys(data);
+            const bandwidthData = labels.map(label => parseInt(data[label].bandwidth));
+            const latencyData = labels.map(label => parseFloat(data[label].latency));
+            const packetLossData = labels.map(label => parseFloat(data[label].packet_loss));
+            const throughputData = labels.map(label => parseInt(data[label].throughput));
+    
+            trafficGraph.data.labels = labels;
+            trafficGraph.data.datasets = [
+                createDataset('Bandwidth (Mbps)', bandwidthData, 'rgba(0, 123, 255, 0.5)'),
+                createDataset('Latency (ms)', latencyData, 'rgba(255, 193, 7, 0.5)'),
+                createDataset('Packet Loss (%)', packetLossData, 'rgba(220, 53, 69, 0.5)'),
+                createDataset('Throughput (Mbps)', throughputData, 'rgba(40, 167, 69, 0.5)')
+            ];
+            trafficGraph.update();
+        }
+    
+        // Helper function to create dataset for the graph
+        function createDataset(label, data, backgroundColor) {
+            return {
+                label: label,
+                data: data,
+                fill: false,
+                backgroundColor: backgroundColor,
+                borderColor: backgroundColor,
+                borderWidth: 2
+            };
+        }
+    
+        // Load data and initialize graph on window load
+        window.onload = function() {
+            initTrafficGraph();
+            fetchNetworkStats();
+            setInterval(fetchNetworkStats, 30000); // Refresh stats every 30 seconds
+        };
+    </script>
+    
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
