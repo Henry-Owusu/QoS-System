@@ -2,6 +2,7 @@ import csv
 from io import StringIO
 import random
 from flask import Flask, render_template, request, jsonify, make_response
+import os
 
 
 app = Flask(__name__)
@@ -143,4 +144,5 @@ def update_qos():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, port=port, host='0.0.0.0')
